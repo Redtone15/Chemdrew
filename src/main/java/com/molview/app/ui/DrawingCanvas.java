@@ -44,7 +44,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -293,28 +295,30 @@ public final class DrawingCanvas extends Region {
         if (!controller.isShowDeltaRings()) {
             return;
         }
+        // Build the host-to-kind lookup once. The previous atom-first lookup
+        // rescanned (and reallocated) all charge marks for every atom on every
+        // canvas redraw.
+        Map<String, ChargeKind> partialKinds = new HashMap<>();
+        for (ChargeMark mark : document.chargeMarks()) {
+            ChargeKind kind = mark.getKind();
+            if (!kind.isPartial() || mark.getAttachedAtomId() == null) {
+                continue;
+            }
+            if (kind == ChargeKind.PARTIAL_POSITIVE) {
+                partialKinds.put(mark.getAttachedAtomId(), kind);
+            } else {
+                partialKinds.putIfAbsent(mark.getAttachedAtomId(), kind);
+            }
+        }
+        if (partialKinds.isEmpty()) {
+            return;
+        }
         for (Atom atom : document.atoms()) {
-            ChargeKind kind = partialKindFor(document, atom);
+            ChargeKind kind = partialKinds.get(atom.getId());
             if (kind != null) {
                 drawChargeRing(gc, atom, chargeColor(kind), false);
             }
         }
-    }
-
-    private ChargeKind partialKindFor(ChemDocument document, Atom atom) {
-        ChargeKind positive = null;
-        ChargeKind negative = null;
-        for (ChargeMark mark : document.chargeMarks()) {
-            if (!mark.getKind().isPartial() || !atom.getId().equals(mark.getAttachedAtomId())) {
-                continue;
-            }
-            if (mark.getKind() == ChargeKind.PARTIAL_POSITIVE) {
-                positive = mark.getKind();
-            } else {
-                negative = mark.getKind();
-            }
-        }
-        return positive != null ? positive : negative;
     }
 
     private String chargeColor(ChargeKind kind) {
