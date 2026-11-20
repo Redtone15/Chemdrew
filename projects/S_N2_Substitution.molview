@@ -1,0 +1,359 @@
+{
+  "format": "molview-studio-project",
+  "version": 1,
+  "application": "MolView Studio",
+  "title": "Sₙ2 Substitution Mechanism",
+  "modified": "2026-11-17T05:13:44.165092700Z",
+  "view": {
+    "zoom": 1.0,
+    "offsetX": 0.0,
+    "offsetY": 0.0,
+    "showGrid": true,
+    "showCarbonLabels": false,
+    "snapToGrid": true
+  },
+  "atoms": [
+    {
+      "id": "aa4fa92f047",
+      "symbol": "O",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 173.205,
+      "y": 340.0
+    },
+    {
+      "id": "ad8352de6f1",
+      "symbol": "H",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 138.564,
+      "y": 320.0
+    },
+    {
+      "id": "a7501dd1571",
+      "symbol": "C",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 311.769,
+      "y": 340.0
+    },
+    {
+      "id": "a8ffbe02a49",
+      "symbol": "C",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 346.41,
+      "y": 320.0
+    },
+    {
+      "id": "ad7bdc34c22",
+      "symbol": "Br",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 381.051,
+      "y": 340.0
+    },
+    {
+      "id": "a59e0403ca7",
+      "symbol": "C",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 831.384,
+      "y": 320.0
+    },
+    {
+      "id": "ac51cc93c38",
+      "symbol": "C",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 866.025,
+      "y": 340.0
+    },
+    {
+      "id": "a899a5bf7b0",
+      "symbol": "O",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 900.666,
+      "y": 320.0
+    },
+    {
+      "id": "a39babf85e1",
+      "symbol": "H",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 935.307,
+      "y": 340.0
+    },
+    {
+      "id": "a49cb0b3ca5",
+      "symbol": "Br",
+      "kind": "ELEMENT",
+      "label": null,
+      "x": 1073.872,
+      "y": 340.0
+    }
+  ],
+  "bonds": [
+    {
+      "id": "b37fee58e65",
+      "from": "aa4fa92f047",
+      "to": "ad8352de6f1",
+      "type": "SINGLE"
+    },
+    {
+      "id": "b95c96d7c4a",
+      "from": "a7501dd1571",
+      "to": "a8ffbe02a49",
+      "type": "SINGLE"
+    },
+    {
+      "id": "b4b836ac758",
+      "from": "a8ffbe02a49",
+      "to": "ad7bdc34c22",
+      "type": "SINGLE"
+    },
+    {
+      "id": "b2bbc4c34f6",
+      "from": "a59e0403ca7",
+      "to": "ac51cc93c38",
+      "type": "SINGLE"
+    },
+    {
+      "id": "b728d53dad2",
+      "from": "ac51cc93c38",
+      "to": "a899a5bf7b0",
+      "type": "SINGLE"
+    },
+    {
+      "id": "b149eb5c18d",
+      "from": "a899a5bf7b0",
+      "to": "a39babf85e1",
+      "type": "SINGLE"
+    }
+  ],
+  "annotations": [
+    {
+      "type": "text",
+      "id": "t57998a7c39",
+      "text": "Bimolecular nucleophilic substitution  ·  Sₙ2",
+      "atomId": null,
+      "x": 600.0,
+      "y": 150.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "text",
+      "id": "tbbf512c717",
+      "text": "reactants",
+      "atomId": null,
+      "x": 290.0,
+      "y": 215.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "text",
+      "id": "tff2cce71bc",
+      "text": "products",
+      "atomId": null,
+      "x": 925.0,
+      "y": 215.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "charge",
+      "id": "c3ae43bccf2",
+      "kind": "NEGATIVE",
+      "atomId": "aa4fa92f047",
+      "x": 192.205,
+      "y": 320.0
+    },
+    {
+      "type": "electron",
+      "id": "e83fd2fa865",
+      "kind": "LONE_PAIR",
+      "atomId": "aa4fa92f047",
+      "x": 177.205,
+      "y": 310.0
+    },
+    {
+      "type": "electron",
+      "id": "eb9d2ae5979",
+      "kind": "LONE_PAIR",
+      "atomId": "aa4fa92f047",
+      "x": 155.205,
+      "y": 354.0
+    },
+    {
+      "type": "text",
+      "id": "t2c0e981ee0",
+      "text": "+",
+      "atomId": null,
+      "x": 245.0,
+      "y": 330.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "charge",
+      "id": "c2d3f1e38ea",
+      "kind": "PARTIAL_POSITIVE",
+      "atomId": "a8ffbe02a49",
+      "x": 350.41,
+      "y": 295.0
+    },
+    {
+      "type": "charge",
+      "id": "c671efc0048",
+      "kind": "PARTIAL_NEGATIVE",
+      "atomId": "ad7bdc34c22",
+      "x": 399.051,
+      "y": 322.0
+    },
+    {
+      "type": "electron",
+      "id": "ea30ce5fff6",
+      "kind": "LONE_PAIR",
+      "atomId": "ad7bdc34c22",
+      "x": 401.051,
+      "y": 356.0
+    },
+    {
+      "type": "text",
+      "id": "t02fc700574",
+      "text": "ethyl bromide",
+      "atomId": null,
+      "x": 345.0,
+      "y": 410.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "arrow",
+      "id": "r57665f1b21",
+      "kind": "CURVED",
+      "x1": 155.205,
+      "y1": 354.0,
+      "cx": 280.0,
+      "cy": 430.0,
+      "x2": 346.41,
+      "y2": 341.0
+    },
+    {
+      "type": "arrow",
+      "id": "r085042e011",
+      "kind": "CURVED",
+      "x1": 363.731,
+      "y1": 326.0,
+      "cx": 388.41,
+      "cy": 275.0,
+      "x2": 379.051,
+      "y2": 351.0
+    },
+    {
+      "type": "arrow",
+      "id": "r3c91ed2888",
+      "kind": "STRAIGHT",
+      "x1": 485.0,
+      "y1": 335.0,
+      "cx": 622.5,
+      "cy": 285.5,
+      "x2": 760.0,
+      "y2": 335.0
+    },
+    {
+      "type": "text",
+      "id": "t8f08027d1b",
+      "text": "Sₙ2",
+      "atomId": null,
+      "x": 620.0,
+      "y": 302.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "electron",
+      "id": "ea57d6cd939",
+      "kind": "LONE_PAIR",
+      "atomId": "a899a5bf7b0",
+      "x": 880.666,
+      "y": 306.0
+    },
+    {
+      "type": "electron",
+      "id": "ee41bcd748f",
+      "kind": "LONE_PAIR",
+      "atomId": "a899a5bf7b0",
+      "x": 919.666,
+      "y": 333.0
+    },
+    {
+      "type": "text",
+      "id": "t9132143de1",
+      "text": "ethanol",
+      "atomId": null,
+      "x": 880.0,
+      "y": 410.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "text",
+      "id": "t799553b572",
+      "text": "+",
+      "atomId": null,
+      "x": 1004.0,
+      "y": 330.0,
+      "fontSize": 17.0,
+      "bold": false,
+      "color": "#253047"
+    },
+    {
+      "type": "charge",
+      "id": "c966a3dd757",
+      "kind": "NEGATIVE",
+      "atomId": "a49cb0b3ca5",
+      "x": 1095.872,
+      "y": 320.0
+    },
+    {
+      "type": "electron",
+      "id": "ecb3ce99766",
+      "kind": "LONE_PAIR",
+      "atomId": "a49cb0b3ca5",
+      "x": 1055.872,
+      "y": 353.0
+    },
+    {
+      "type": "electron",
+      "id": "eb132295f1c",
+      "kind": "LONE_PAIR",
+      "atomId": "a49cb0b3ca5",
+      "x": 1092.872,
+      "y": 328.0
+    },
+    {
+      "type": "electron",
+      "id": "ed8416bbc44",
+      "kind": "LONE_PAIR",
+      "atomId": "a49cb0b3ca5",
+      "x": 1090.872,
+      "y": 358.0
+    }
+  ],
+  "counts": {
+    "annotations": 23,
+    "bonds": 6,
+    "atoms": 10
+  }
+}
