@@ -4,7 +4,7 @@ package com.molview.app.model;
 public enum Tool {
     SELECT("Select", "Select and move objects"),
     PAN("Pan", "Pan the drawing canvas"),
-    ATOM("Atom", "Click: atom · Drag empty: chain · Drag atom: bond angle"),
+    ATOM("Atom", "Click: atom · Drag empty: chain · Drag atom past threshold: chain"),
     BOND("Bond", "Draw a bond; single-tool clicks cycle a bond single↔triple"),
     CHARGE_POS("Positive charge", "Add a formal positive charge"),
     CHARGE_NEG("Negative charge", "Add a formal negative charge"),

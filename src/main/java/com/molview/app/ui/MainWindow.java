@@ -115,7 +115,7 @@ public final class MainWindow {
         stage.setHeight(height);
         stage.setMinWidth(com.molview.app.config.AppConfig.getInt("window.minWidth", 1080));
         stage.setMinHeight(com.molview.app.config.AppConfig.getInt("window.minHeight", 700));
-        stage.setTitle("Untitled — MolView Studio");
+        stage.setTitle("Untitled");
         stage.setOnCloseRequest(event -> {
             if (!maybeSave()) {
                 event.consume();
@@ -128,7 +128,7 @@ public final class MainWindow {
         canvas.setStatusHandler(statusLabel::setText);
         canvas.setViewChangedHandler(this::updateZoomLabel);
         canvas.setFocusInspectorHandler(properties::requestFocus);
-        statusLabel.setText("Carbon loaded — click to place/change · drag empty: chain · drag atom: set bond angle.");
+        statusLabel.setText("Carbon loaded — click to place/change · drag empty: chain · drag atom past threshold: chain.");
         updateTitle();
         updateChrome();
     }
@@ -171,7 +171,7 @@ public final class MainWindow {
     public void writeScreenshot(Path path) throws IOException {
         canvas.hidePointerPreview();
         statusLabel.setText(controller.getDocument().isEmpty()
-                ? "Carbon loaded — click to place/change · drag empty: chain · drag atom: set bond angle."
+                ? "Carbon loaded — click to place/change · drag empty: chain · drag atom past threshold: chain."
                 : "Ready  ·  hexagonal grid  ·  one-edge bonds");
         root.applyCss();
         root.layout();
@@ -306,23 +306,6 @@ public final class MainWindow {
         header.setAlignment(Pos.CENTER_LEFT);
         header.setPadding(new Insets(9, 18, 9, 16));
 
-        StackPane logo = new StackPane();
-        logo.getStyleClass().add("brand-mark");
-        Label logoGlyph = new Label("M");
-        logoGlyph.getStyleClass().add("brand-mark-text");
-        logo.getChildren().add(logoGlyph);
-
-        VBox brand = new VBox(0);
-        Label brandTitle = new Label("MolView Studio");
-        brandTitle.getStyleClass().add("brand-title");
-        Label brandSubtitle = new Label("Organic structure editor");
-        brandSubtitle.getStyleClass().add("brand-subtitle");
-        brand.getChildren().addAll(brandTitle, brandSubtitle);
-
-        HBox brandBox = new HBox(10, logo, brand);
-        brandBox.setAlignment(Pos.CENTER_LEFT);
-        brandBox.setMinWidth(216);
-
         Button newButton = headerCommand("New", "Create a new drawing (Ctrl+N)", this::newProject);
         Button openButton = headerCommand("Open", "Open a .molview project (Ctrl+O)", this::openProject);
         Button saveButton = headerCommand("Save", "Save the project (Ctrl+S)", this::saveProject);
@@ -332,6 +315,20 @@ public final class MainWindow {
         files.setAlignment(Pos.CENTER_LEFT);
         HBox history = new HBox(4, undoButton, redoButton);
         history.setAlignment(Pos.CENTER_LEFT);
+
+        StackPane brandMark = new StackPane();
+        brandMark.getStyleClass().add("brand-mark");
+        Label brandGlyph = new Label("M");
+        brandGlyph.getStyleClass().add("brand-mark-text");
+        brandMark.getChildren().add(brandGlyph);
+        Label brandTitle = new Label("MolView Studio");
+        brandTitle.getStyleClass().add("brand-title");
+        Label brandSubtitle = new Label("Organic structure editor");
+        brandSubtitle.getStyleClass().add("brand-subtitle");
+        VBox brandText = new VBox(0, brandTitle, brandSubtitle);
+        brandText.setAlignment(Pos.CENTER_LEFT);
+        HBox brand = new HBox(9, brandMark, brandText);
+        brand.setAlignment(Pos.CENTER_LEFT);
 
         VBox titleBox = new VBox(1);
         documentTitle.getStyleClass().add("document-title");
@@ -352,8 +349,8 @@ public final class MainWindow {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        header.getChildren().addAll(brandBox, headerDivider(), files, history, spacer,
-                titleBox, headerDivider(), export);
+        header.getChildren().addAll(brand, headerDivider(), files, history,
+                spacer, titleBox, headerDivider(), export);
         return header;
     }
 
@@ -861,7 +858,7 @@ public final class MainWindow {
         documentSubtitle.setText(file == null ? "Unsaved project" : file.getFileName().toString());
         documentSubtitle.setTooltip(new Tooltip(file == null ? "Not saved yet" : file.toAbsolutePath().toString()));
         dirtyDot.setVisible(controller.isDirty());
-        stage.setTitle(title + (controller.isDirty() ? " •" : "") + " — MolView Studio");
+        stage.setTitle(title + (controller.isDirty() ? " •" : ""));
     }
 
     private void updateZoomLabel() {

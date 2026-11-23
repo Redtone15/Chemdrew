@@ -182,6 +182,23 @@ public final class PropertiesPanel extends ScrollPane {
                 "Free: no snap · 60°: six directions · Custom: any step · Hex: 120° lattice");
         angleNote.getStyleClass().add("section-note");
         angleNote.setWrapText(true);
+        Spinner<Double> chainThreshold = new Spinner<>(
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(
+                        0.5, 5.0, controller.getChainThresholdUnits(), 0.25));
+        chainThreshold.setEditable(true);
+        chainThreshold.setPrefWidth(82);
+        chainThreshold.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (!refreshing && newValue != null) {
+                controller.setChainThresholdUnits(newValue);
+            }
+        });
+        HBox chainRow = new HBox(7, new Label("Chain threshold"), chainThreshold,
+                new Label("units"));
+        chainRow.setAlignment(Pos.CENTER_LEFT);
+        Label chainNote = new Label(
+                "Drag an atom farther than this to grow a chain with the selected element at its end.");
+        chainNote.getStyleClass().add("section-note");
+        chainNote.setWrapText(true);
         Label annotationsHeading = new Label("Annotations");
         annotationsHeading.getStyleClass().add("property-value");
         CheckBox deltaRings = new CheckBox("Show δ+ / δ− rings");
@@ -228,6 +245,7 @@ public final class PropertiesPanel extends ScrollPane {
         HBox quick = new HBox(7, selectAll);
         canvasSection.getChildren().addAll(canvasTitle, grid, carbon,
                 angleHeading, angleMode, customRow, angleNote,
+                chainRow, chainNote,
                 annotationsHeading, deltaRings, electronRow, deltaRow,
                 annotationNote, lattice, counts, quick);
         root.getChildren().add(canvasSection);

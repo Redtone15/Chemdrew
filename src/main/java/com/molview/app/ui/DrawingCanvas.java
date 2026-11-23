@@ -99,6 +99,7 @@ public final class DrawingCanvas extends Region {
     private boolean freeBondDrag;
     private boolean freeBondTool;
     private boolean pendingFreeBond;
+    private boolean chainExtensionActive;
     private double freeBondX = Double.NaN;
     private double freeBondY = Double.NaN;
     private boolean mouseInside;
@@ -347,7 +348,7 @@ public final class DrawingCanvas extends Region {
         if (dragMode != DragMode.CHAIN_DRAW) {
             return;
         }
-        if (freeBondDrag) {
+        if (freeBondDrag && !chainExtensionActive) {
             if (atomPressTarget != null && !Double.isNaN(freeBondX)
                     && !Double.isNaN(freeBondY)) {
                 gc.save();
@@ -377,10 +378,18 @@ public final class DrawingCanvas extends Region {
         }
 
         if (atomPressTarget == null || chainPreview.size() > 2) {
-            // Number every carbon/bend after the source atom.
+            // Number every carbon after the source; the selected heteroatom at
+            // the far end is not counted as a carbon.
+            boolean endHetero = atomPressTarget != null
+                    && !(controller.getActiveAtomKind()
+                    == com.molview.app.model.AtomKind.ELEMENT
+                    && "C".equals(controller.getActiveElement()));
             gc.setFont(Font.font("Segoe UI", FontWeight.BOLD, 10.5));
             gc.setTextAlign(javafx.scene.text.TextAlignment.CENTER);
             for (int i = 1; i < chainPreview.size(); i++) {
+                if (endHetero && i == chainPreview.size() - 1) {
+                    continue;
+                }
                 HexGrid.Vertex vertex = chainPreview.get(i);
                 String number = Integer.toString(i + 1);
                 double x = vertex.x() + 8;
@@ -608,6 +617,7 @@ public final class DrawingCanvas extends Region {
         freeBondDrag = false;
         freeBondX = Double.NaN;
         freeBondY = Double.NaN;
+        chainExtensionActive = false;
         if (atomPressTarget != null) {
             freeBondDrag = isFreeBondSource(atomPressTarget)
                     || controller.getBondAngleMode() != BondAngleMode.HEX;
@@ -803,6 +813,22 @@ public final class DrawingCanvas extends Region {
                     double displacement = Math.hypot(
                             worldX - atomPressTarget.getX(),
                             worldY - atomPressTarget.getY());
+                    if (HexGrid.isVertex(atomPressTarget.getX(),
+                            atomPressTarget.getY(), 0.25)
+                            && displacement > HexGrid.EDGE
+                            * controller.getChainThresholdUnits()) {
+                        HexGrid.Vertex target = controller.snapToVertex(worldX, worldY);
+                        chainPreview = HexGrid.path(chainStartVertex, target);
+                        if (chainPreview.isEmpty()) {
+                            chainPreview = List.of(chainStartVertex);
+                        }
+                        if (chainPreview.size() > 2) {
+                            chainExtensionActive = true;
+                            redraw();
+                            return;
+                        }
+                    }
+                    chainExtensionActive = false;
                     if (freeBondDrag) {
                         double[] endpoint = controller.freeBondEndpoint(
                                 atomPressTarget, worldX, worldY);
@@ -810,15 +836,7 @@ public final class DrawingCanvas extends Region {
                             freeBondX = endpoint[0];
                             freeBondY = endpoint[1];
                         }
-                        redraw();
-                        return;
-                    }
-                    if (atomPressTarget.isCarbon() && displacement > HexGrid.EDGE * 1.5) {
-                        HexGrid.Vertex target = controller.snapToVertex(worldX, worldY);
-                        chainPreview = HexGrid.path(chainStartVertex, target);
-                        if (chainPreview.isEmpty()) {
-                            chainPreview = List.of(chainStartVertex);
-                        }
+                        chainPreview = List.of(chainStartVertex);
                         redraw();
                         return;
                     }
@@ -933,6 +951,7 @@ public final class DrawingCanvas extends Region {
         chainPreview = List.of();
         freeBondDrag = false;
         freeBondTool = false;
+        chainExtensionActive = false;
         freeBondX = Double.NaN;
         freeBondY = Double.NaN;
         bondDownAtom = null;
@@ -1081,6 +1100,10 @@ public final class DrawingCanvas extends Region {
     private void finishChain() {
         boolean dragged = moved;
         if (atomPressTarget != null) {
+            if (dragged && chainExtensionActive && chainPreview.size() > 2) {
+                controller.buildChainFromExisting(atomPressTarget, chainPreview);
+                return;
+            }
             if (freeBondDrag) {
                 if (dragged && !Double.isNaN(freeBondX) && !Double.isNaN(freeBondY)) {
                     Bond bond = controller.drawFreeBondFromAtom(atomPressTarget,
@@ -1101,10 +1124,6 @@ public final class DrawingCanvas extends Region {
                 } else {
                     toast.accept("Place atoms on hexagonal-grid vertices before drawing bonds.");
                 }
-                return;
-            }
-            if (dragged && atomPressTarget.isCarbon() && chainPreview.size() > 2) {
-                controller.buildAlkaneChain(chainPreview);
                 return;
             }
             if (dragged && chainPreview.size() == 2) {

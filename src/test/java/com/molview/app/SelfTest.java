@@ -341,6 +341,39 @@ public final class SelfTest {
         annotationSize.setShowDeltaRings(false);
         check(!annotationSize.isShowDeltaRings(),
                 "delta rings can be disabled");
+
+        EditorController extension = new EditorController();
+        extension.setActiveElement("C");
+        HexGrid.Vertex chainSourceVertex = HexGrid.nearestVertex(700, 540);
+        Atom chainSource = extension.addAtomAt(
+                chainSourceVertex.x(), chainSourceVertex.y());
+        extension.setActiveElement("O");
+        List<HexGrid.Vertex> extensionPath = HexGrid.path(
+                chainSourceVertex, HexGrid.nearestVertex(880, 550));
+        int extensionCount = extension.buildChainFromExisting(chainSource, extensionPath);
+        check(extensionCount == extensionPath.size(),
+                "chain from an existing atom creates every path vertex");
+        check(extension.getDocument().atoms().size() == extensionCount,
+                "existing-atom chain is connected to the source");
+        Atom chainEnd = extension.atomAtVertex(
+                extensionPath.get(extensionPath.size() - 1));
+        check(chainEnd != null && chainEnd.getElementSymbol().equals("O"),
+                "selected element is placed at the far end of the chain");
+        boolean carbonIntermediates = true;
+        for (int i = 1; i < extensionPath.size() - 1; i++) {
+            Atom mid = extension.atomAtVertex(extensionPath.get(i));
+            carbonIntermediates &= mid != null
+                    && mid.getElementSymbol().equals("C");
+        }
+        check(carbonIntermediates,
+                "chain intermediates are carbon");
+        check(extension.getDocument().bonds().size() == extensionCount - 1,
+                "existing-atom chain is one connected path");
+        check(extension.getDocument().selectedObjects().isEmpty(),
+                "existing-atom chain is unselected");
+        extension.setChainThresholdUnits(2.75);
+        check(Math.abs(extension.getChainThresholdUnits() - 2.75) < 1e-9,
+                "chain threshold is user-configurable");
     }
 
     private static void testImplicitHydrogens() {

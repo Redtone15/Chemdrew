@@ -98,9 +98,11 @@ run.bat --example
 4. With an element active, **clicking** an existing atom replaces that atom with
    the selected element. Dragging from an atom creates a new bond using the
    **New bond angle** setting in the Inspector: **60°**, **Free**, **Custom**
-   step, or **Hex grid (120°)**. The 60° mode is the default. In Hex mode a long
-   carbon drag expands into an alkane chain; empty-space drags still build the
-   hex alkane skeleton in every mode.
+   step, or **Hex grid (120°)**. The 60° mode is the default. Dragging an atom
+   farther than the configurable **Chain threshold** grows an alkane chain
+   connected to that atom; intermediate atoms are carbon and the selected element
+   is placed at the far end. Empty-space drags still build the hex alkane skeleton
+   in every mode.
 5. Use the bond tools for single/double/triple/wedge/hydrogen/aromatic bonds.
    In **Hex grid** mode bonds span one adjacent pair of hex vertices; free, 60°
    and custom modes place a standard-length bond at the chosen angle. With the
@@ -138,11 +140,17 @@ Open **Inspector → New bond angle**:
 - **60° snap** — default; new bonds take one of six 60° directions.
 - **Free** — full 360° rotation with no snapping.
 - **Custom** — choose any step from 5° to 180°; bonds snap to its multiples.
-- **Hex grid (120°)** — restore one-edge hexagonal bonds; long carbon drags can
-  again expand into an alkane chain.
+- **Hex grid (120°)** — restore strict one-edge hexagonal bonds for short bonds.
 
 The setting applies to new single bonds from the Atom and Bond tools. Empty-space
 alkane-chain drags still follow the hexagonal skeleton.
+
+## Chain threshold
+
+The Inspector's **Chain threshold** spinner (0.5–5.0 grid units, default 1.5)
+controls when a drag from an existing atom becomes an alkane chain. Short drags
+stay a single bond; long drags generate a chain whose intermediate atoms are
+carbon and whose far end is the currently selected element.
 
 ## Annotation distances
 
@@ -173,9 +181,9 @@ Distances are in canvas units (16–80).
   atom is numbered **2**, then 3, 4, … (the first atom is the starting element);
   no completion dialog is shown.
 - Dragging from an existing atom draws one new bond at the selected **New bond
-  angle**. In **Hex grid** mode a long carbon drag (over 1.5 grid units) expands
-  into an alkane chain; free, 60° and custom modes keep it a single
-  standard-length bond.
+  angle** while the drag is short. Past the **Chain threshold** (default 1.5 grid
+  units) it grows an alkane chain connected to that atom, with the selected
+  element at the chain end. Empty-space drags still use the hex skeleton.
 - The previews deliberately show no selected-element ghost or circular atom
   halos.
 - **Newly placed bonds start unselected**, leaving the canvas in a clean drawing

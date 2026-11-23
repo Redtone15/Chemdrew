@@ -202,6 +202,36 @@ public final class CanvasInteractionTest extends Application {
         check(controller.getDocument().selectedObjects().isEmpty(),
                 "the short atom-drag bond is unselected");
 
+        // A long drag from an existing carbon grows a chain to the selected
+        // element at the far end, even outside strict hex mode.
+        controller.replaceDocument(new com.molview.app.model.ChemDocument(), null, true);
+        controller.setActiveElement("C");
+        click(300, 500);
+        Atom growSource = controller.getDocument().atoms().get(0);
+        controller.setActiveElement("O");
+        drag(growSource.getX(), growSource.getY(),
+                growSource.getX() + 105, growSource.getY());
+        check(controller.getDocument().atoms().size() > 2
+                        && controller.getDocument().bonds().size() > 1,
+                "a long carbon drag from an atom grows an alkane chain");
+        Atom farElement = controller.getDocument().atoms().stream()
+                .filter(a -> a.getElementSymbol().equals("O"))
+                .findFirst().orElse(null);
+        check(farElement != null && farElement != growSource,
+                "selected element is placed at the far end of the chain");
+
+        controller.setChainThresholdUnits(3.0);
+        controller.replaceDocument(new com.molview.app.model.ChemDocument(), null, true);
+        controller.setActiveElement("C");
+        click(300, 500);
+        Atom thresholdSource = controller.getDocument().atoms().get(0);
+        controller.setActiveElement("O");
+        drag(thresholdSource.getX(), thresholdSource.getY(),
+                thresholdSource.getX() + 100, thresholdSource.getY());
+        check(controller.getDocument().atoms().size() == 2,
+                "raising the chain threshold keeps a shorter carbon drag as one bond");
+        controller.setChainThresholdUnits(1.5);
+
         controller.replaceDocument(new com.molview.app.model.ChemDocument(), null, true);
         controller.setActiveElement("C");
         controller.setBondAngleMode(com.molview.app.model.BondAngleMode.HEX);
@@ -224,7 +254,7 @@ public final class CanvasInteractionTest extends Application {
         click(300, 560);
         Atom bromine = controller.getDocument().atoms().get(0);
         controller.setActiveElement("C");
-        drag(bromine.getX(), bromine.getY(), bromine.getX() + 50, bromine.getY() + 50);
+        drag(bromine.getX(), bromine.getY(), bromine.getX() + 30, bromine.getY() + 30);
         check(controller.getDocument().atoms().size() == 2
                         && controller.getDocument().bonds().size() == 1,
                 "a terminal halogen accepts one free-angle bond");

@@ -58,6 +58,7 @@ public final class EditorController {
     private boolean snapToGrid = true;
     private BondAngleMode bondAngleMode = BondAngleMode.SNAP_60;
     private int customBondAngle = 45;
+    private double chainThresholdUnits = 1.5;
     private boolean showDeltaRings = true;
     private int electronDistance = 30;
     private int deltaLabelDistance = 28;
@@ -183,6 +184,19 @@ public final class EditorController {
             return;
         }
         customBondAngle = clamped;
+        fireChanged();
+    }
+
+    public double getChainThresholdUnits() {
+        return chainThresholdUnits;
+    }
+
+    public void setChainThresholdUnits(double units) {
+        double clamped = Math.max(0.5, Math.min(5.0, units));
+        if (Math.abs(clamped - chainThresholdUnits) < 1e-9) {
+            return;
+        }
+        chainThresholdUnits = clamped;
         fireChanged();
     }
 
@@ -542,6 +556,81 @@ public final class EditorController {
             document.clearSelection();
         });
         return vertices.size();
+    }
+
+    /**
+     * Grows an alkane chain from an existing atom. Intermediate vertices are
+     * carbon; the selected element is placed at the far end.
+     */
+    public int buildChainFromExisting(Atom source, List<HexGrid.Vertex> path) {
+        if (source == null || path == null || path.size() < 2) {
+            return 0;
+        }
+        if (!HexGrid.isVertex(source.getX(), source.getY(), 0.25)) {
+            return 0;
+        }
+        List<HexGrid.Vertex> vertices = canonicalPath(path);
+        HexGrid.Vertex sourceVertex = snapToVertex(source.getX(), source.getY());
+        if (vertices.isEmpty()
+                || vertices.get(0).distanceTo(sourceVertex) > 0.25) {
+            if (vertices.isEmpty()
+                    || !HexGrid.isEdge(sourceVertex, vertices.get(0))) {
+                return 0;
+            }
+            vertices.add(0, sourceVertex);
+        }
+        if (vertices.size() < 2) {
+            return 0;
+        }
+        perform("Draw alkane chain", () -> {
+            document.clearSelection();
+            Atom previous = source;
+            for (int i = 1; i < vertices.size(); i++) {
+                HexGrid.Vertex vertex = vertices.get(i);
+                Atom atom = atomAtVertex(vertex);
+                if (atom == null) {
+                    if (i == vertices.size() - 1) {
+                        atom = createAtomForActive(vertex.x(), vertex.y());
+                    } else {
+                        atom = Atom.element("C", vertex.x(), vertex.y());
+                    }
+                    document.add(atom);
+                } else if (i == vertices.size() - 1) {
+                    applyActiveAtomTo(atom);
+                }
+                if (previous != atom && findBond(previous, atom) == null
+                        && HexGrid.isEdge(
+                        new HexGrid.Vertex(previous.getX(), previous.getY()),
+                        new HexGrid.Vertex(atom.getX(), atom.getY()))) {
+                    document.add(new Bond(previous, atom, BondType.SINGLE));
+                    layoutAttachedCharges(previous);
+                    layoutAttachedCharges(atom);
+                    layoutAttachedElectronMarks(previous);
+                    layoutAttachedElectronMarks(atom);
+                }
+                previous = atom;
+            }
+            document.clearSelection();
+        });
+        return vertices.size();
+    }
+
+    private void applyActiveAtomTo(Atom atom) {
+        switch (activeAtomKind) {
+            case R_GROUP -> {
+                atom.setKind(AtomKind.R_GROUP);
+                atom.setGenericLabel(rLabel);
+            }
+            case X_GROUP -> {
+                atom.setKind(AtomKind.X_GROUP);
+                atom.setGenericLabel(xLabel);
+            }
+            default -> {
+                atom.setKind(AtomKind.ELEMENT);
+                atom.setGenericLabel(null);
+                atom.setElementSymbol(activeElement);
+            }
+        }
     }
 
     private List<HexGrid.Vertex> canonicalPath(List<HexGrid.Vertex> path) {
